@@ -32,7 +32,7 @@ serve_home(_Request) :-
           script([src('/js/game.js')], '')
         ]).
 
-% Servir archivos estáticos - VERSIÓN CORREGIDA
+% Servir archivos estáticos
 serve_js(_Request) :-
     prolog_load_context(directory, Dir),
     atomic_list_concat([Dir, '/../frontend/js/game.js'], Path),
@@ -43,7 +43,57 @@ serve_css(_Request) :-
     atomic_list_concat([Dir, '/../frontend/css/estilo.css'], Path),
     http_reply_file(Path, [], []).
 
-% Resto del código permanece igual...
+% Handle guess requests with proper error handling
+handle_guess(Request) :-
+    catch(
+        handle_guess_internal(Request),
+        Error,
+        reply_json_dict(_{error: true, message: Error})
+    ).
+
+handle_guess_internal(Request) :-
+    (   http_read_json_dict(Request, Data)
+    ->  (   get_dict(attribute, Data, Attribute)
+        ->  get_dict(answer, Data, Answer),
+            assertz(user_response(Attribute, Answer))
+        ;   true
+        ),
+        remaining_characters(Chars),
+        length(Chars, NumChars),
+        (   NumChars = 1
+        ->  [Character] = Chars,
+            character_description(Character, Description),
+            reply_json_dict(_{
+                gameOver: true,
+                solution: Character,
+                description: Description
+            })
+        ;   (   next_question(NextQ)
+            ->  reply_json_dict(_{
+                    gameOver: false,
+                    nextQuestion: NextQ,
+                    remainingCharacters: NumChars
+                })
+            ;   reply_json_dict(_{
+                    error: true,
+                    message: "No more questions available"
+                })
+            )
+        )
+    ;   reply_json_dict(_{
+            error: true,
+            message: "Invalid JSON request"
+        })
+    ).
+
+% Handle reset requests with error handling
+handle_reset(_Request) :-
+    catch(
+        (retractall(user_response(_, _)),
+        reply_json_dict(_{status: "ok"})),
+        Error,
+        reply_json_dict(_{error: true, message: Error})
+    ).
 
 % Lógica del juego
 remaining_characters(Chars) :-
@@ -61,6 +111,6 @@ next_question(Question) :-
 
 % Iniciar servidor
 start_server :-
-    http_server(http_dispatch, [port(8080)]).
+    http_server(http_dispatch, [port(5173)]).
 
 :- initialization(start_server).
