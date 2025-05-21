@@ -7,11 +7,11 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/guess': {
-        target: 'http://localhost:5173',
+        target: 'http://localhost:3000',
         changeOrigin: true
       },
       '/reset': {
-        target: 'http://localhost:5173',
+        target: 'http://localhost:3000',
         changeOrigin: true
       }
     }
