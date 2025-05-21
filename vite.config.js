@@ -5,8 +5,14 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/guess': 'http://localhost:8080',
-      '/reset': 'http://localhost:8080'
+      '/guess': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      },
+      '/reset': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      }
     }
   }
 })
