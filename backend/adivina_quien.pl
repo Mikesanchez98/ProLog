@@ -15,6 +15,10 @@
 
 % Dynamic predicates for game state
 :- dynamic user_response/2.
+:- dynamic question_count/1.
+
+% Initialize question count
+:- asserta(question_count(0)).
 
 % Handle guess requests with proper error handling
 handle_guess(Request) :-
@@ -28,12 +32,16 @@ handle_guess_internal(Request) :-
     (   http_read_json_dict(Request, Data)
     ->  (   get_dict(attribute, Data, Attribute)
         ->  get_dict(answer, Data, Answer),
-            assertz(user_response(Attribute, Answer))
+            assertz(user_response(Attribute, Answer)),
+            retract(question_count(Count)),
+            NewCount is Count + 1,
+            asserta(question_count(NewCount))
         ;   true
         ),
         remaining_characters(Chars),
         length(Chars, NumChars),
-        (   NumChars = 1
+        question_count(CurrentCount),
+        (   (NumChars = 1, CurrentCount >= 3)
         ->  [Character] = Chars,
             character_description(Character, Description),
             reply_json_dict(_{
@@ -63,6 +71,8 @@ handle_guess_internal(Request) :-
 handle_reset(_Request) :-
     catch(
         (retractall(user_response(_, _)),
+        retract(question_count(_)),
+        asserta(question_count(0)),
         reply_json_dict(_{status: "ok"})),
         Error,
         reply_json_dict(_{error: true, message: Error})

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Button, Paper, Typography, Box, CircularProgress } from '@mui/material';
+import { Paper, Typography, Box, CircularProgress } from '@mui/material';
 import QuestionArea from './components/QuestionArea';
 import CharacterDisplay from './components/CharacterDisplay';
 import GameControls from './components/GameControls';
@@ -12,6 +12,7 @@ function App() {
     solution: null,
     description: null,
     remainingCharacters: 25,
+    questionCount: 0
   });
 
   const fetchQuestion = async () => {
@@ -34,7 +35,12 @@ function App() {
   const handleAnswer = async (answer) => {
     if (!currentQuestion) return;
     
-    setGameState(prev => ({ ...prev, isLoading: true }));
+    setGameState(prev => ({ 
+      ...prev, 
+      isLoading: true,
+      questionCount: prev.questionCount + 1 
+    }));
+    
     try {
       const response = await fetch('/guess', {
         method: 'POST',
@@ -78,6 +84,7 @@ function App() {
         solution: null,
         description: null,
         remainingCharacters: 25,
+        questionCount: 0
       });
       fetchQuestion();
     } catch (error) {
@@ -107,12 +114,14 @@ function App() {
           solution={gameState.solution}
           description={gameState.description}
           isLoading={gameState.isLoading}
+          questionCount={gameState.questionCount}
         />
 
         <QuestionArea 
           currentQuestion={currentQuestion}
           isLoading={gameState.isLoading}
           remainingCharacters={gameState.remainingCharacters}
+          questionCount={gameState.questionCount}
         />
 
         <GameControls 
@@ -131,5 +140,3 @@ function App() {
     </motion.div>
   );
 }
-
-export default App;

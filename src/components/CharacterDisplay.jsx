@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Box, Typography, Paper } from '@mui/material';
 
-function CharacterDisplay({ solution, description, isLoading }) {
+function CharacterDisplay({ solution, description, isLoading, questionCount }) {
   return (
     <motion.div
       layout
@@ -25,7 +25,7 @@ function CharacterDisplay({ solution, description, isLoading }) {
         </motion.div>
       ) : (
         <Typography variant="body1" className="text-gray-600 italic">
-          {isLoading ? 'Pensando...' : 'Piensa en un personaje...'}
+          {isLoading ? 'Pensando...' : questionCount === 0 ? 'Piensa en un personaje...' : 'Analizando tus respuestas...'}
         </Typography>
       )}
     </motion.div>

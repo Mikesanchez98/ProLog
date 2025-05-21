@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Typography, Box } from '@mui/material';
 
-function QuestionArea({ currentQuestion, isLoading, remainingCharacters }) {
+function QuestionArea({ currentQuestion, isLoading, remainingCharacters, questionCount }) {
   const formatQuestion = (attr) => {
     if (!attr) return '';
     const attrText = attr.replace(/_/g, ' ');
@@ -19,7 +19,7 @@ function QuestionArea({ currentQuestion, isLoading, remainingCharacters }) {
       </Typography>
       
       <Typography variant="body2" className="text-gray-600">
-        Quedan {remainingCharacters} personajes posibles
+        Pregunta {questionCount} de 3 - Quedan {remainingCharacters} personajes posibles
       </Typography>
     </motion.div>
   );
