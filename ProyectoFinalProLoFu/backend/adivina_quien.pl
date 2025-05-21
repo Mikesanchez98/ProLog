@@ -111,6 +111,6 @@ next_question(Question) :-
 
 % Iniciar servidor
 start_server :-
-    http_server(http_dispatch, [port(5173)]).
+    http_server(http_dispatch, [port(3000)]).
 
 :- initialization(start_server).
