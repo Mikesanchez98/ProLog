@@ -140,3 +140,5 @@ function App() {
     </motion.div>
   );
 }
+
+export default App
