@@ -1,25 +1,27 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Paper } from '@mui/material';
 
-function CharacterDisplay({ solution, isLoading }) {
+function CharacterDisplay({ solution, description, isLoading }) {
   return (
     <motion.div
       layout
-      className="mb-8 h-64 flex items-center justify-center rounded-lg bg-gray-100"
+      className="mb-8 min-h-[200px] flex items-center justify-center"
     >
       {solution ? (
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="text-center"
+          className="text-center w-full"
         >
-          <div className="w-48 h-48 bg-gray-300 rounded-full mb-4 mx-auto">
-            {/* Placeholder for character image */}
-          </div>
-          <Typography variant="h4" className="text-purple-600">
-            ¡Es {solution}!
-          </Typography>
+          <Paper elevation={3} className="p-6 bg-purple-50">
+            <Typography variant="h4" className="text-purple-600 mb-4">
+              ¡Es {solution}!
+            </Typography>
+            <Typography variant="body1" className="text-gray-700 italic">
+              {description}
+            </Typography>
+          </Paper>
         </motion.div>
       ) : (
         <Typography variant="body1" className="text-gray-600 italic">

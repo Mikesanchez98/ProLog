@@ -10,6 +10,7 @@ function App() {
   const [gameState, setGameState] = useState({
     isLoading: false,
     solution: null,
+    description: null,
     remainingCharacters: 25,
   });
 
@@ -54,7 +55,11 @@ function App() {
 
   const processResponse = (data) => {
     if (data.gameOver) {
-      setGameState(prev => ({ ...prev, solution: data.solution }));
+      setGameState(prev => ({ 
+        ...prev, 
+        solution: data.solution,
+        description: data.description 
+      }));
       setCurrentQuestion(null);
     } else {
       setCurrentQuestion(data.nextQuestion);
@@ -71,6 +76,7 @@ function App() {
       setGameState({
         isLoading: false,
         solution: null,
+        description: null,
         remainingCharacters: 25,
       });
       fetchQuestion();
@@ -99,6 +105,7 @@ function App() {
 
         <CharacterDisplay 
           solution={gameState.solution}
+          description={gameState.description}
           isLoading={gameState.isLoading}
         />
 
